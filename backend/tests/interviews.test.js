@@ -130,7 +130,7 @@ describe('🧪 Interview API Tests', () => {
                 .set('Authorization', `Bearer ${adminToken}`);
 
             expect(res.statusCode).toBe(200);
-            createdInterviewId = null; // prevent afterAll double-delete
+            createdInterviewId = null; 
         });
     });
 });

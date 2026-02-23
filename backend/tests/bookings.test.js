@@ -17,14 +17,14 @@ describe('🧪 Booking API Tests', () => {
             .send({ email: 'admin@interview.com', password: 'admin123' });
         adminToken = adminRes.body.token;
 
-        // Get an available scheduled interview
+        
         const intRes = await request(app)
             .get('/api/interviews')
             .set('Authorization', `Bearer ${candidateToken}`);
         const available = (intRes.body.interviews || []).find(i => i.status === 'scheduled');
         if (available) availableInterviewId = available.id;
 
-        // Clean up any existing bookings for alice on this interview
+        
         if (availableInterviewId) {
             const aliceRes = await pool.query("SELECT id FROM users WHERE email='alice@example.com'");
             if (aliceRes.rows.length) {

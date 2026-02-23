@@ -1,6 +1,6 @@
 const pool = require('../config/database');
 
-// GET /api/interviews
+
 const getAllInterviews = async (req, res) => {
     try {
         const result = await pool.query(`
@@ -22,7 +22,7 @@ const getAllInterviews = async (req, res) => {
     }
 };
 
-// GET /api/interviews/:id
+
 const getInterviewById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -40,7 +40,7 @@ const getInterviewById = async (req, res) => {
             return res.status(404).json({ message: 'Interview not found.' });
         }
 
-        // Get bookings for this interview
+        
         const bookings = await pool.query(`
       SELECT b.id, b.user_id, u.name AS candidate_name, u.email AS candidate_email
       FROM bookings b
@@ -58,7 +58,7 @@ const getInterviewById = async (req, res) => {
     }
 };
 
-// POST /api/interviews (admin only)
+
 const createInterview = async (req, res) => {
     try {
         const { title, scheduled_time } = req.body;
@@ -82,7 +82,7 @@ const createInterview = async (req, res) => {
     }
 };
 
-// PUT /api/interviews/:id (admin only)
+
 const updateInterview = async (req, res) => {
     try {
         const { id } = req.params;
@@ -118,7 +118,7 @@ const updateInterview = async (req, res) => {
     }
 };
 
-// DELETE /api/interviews/:id (admin only)
+
 const deleteInterview = async (req, res) => {
     try {
         const { id } = req.params;
@@ -128,7 +128,7 @@ const deleteInterview = async (req, res) => {
             return res.status(404).json({ message: 'Interview not found.' });
         }
 
-        // Delete bookings first (cascade)
+        
         await pool.query('DELETE FROM bookings WHERE interview_id = $1', [id]);
         await pool.query('DELETE FROM interviews WHERE id = $1', [id]);
 

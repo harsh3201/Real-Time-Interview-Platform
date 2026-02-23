@@ -2,11 +2,11 @@ const jwt = require('jsonwebtoken');
 const pool = require('../config/database');
 require('dotenv').config();
 
-// Track active rooms: Map<interviewId, Set<socketId>>
+
 const activeRooms = new Map();
 
 const setupSocket = (io) => {
-    // Auth middleware for Socket.io
+    
     io.use((socket, next) => {
         const token = socket.handshake.auth.token || socket.handshake.headers.authorization;
         if (!token) {
@@ -25,14 +25,14 @@ const setupSocket = (io) => {
     io.on('connection', (socket) => {
         console.log(`🔌 Socket connected: ${socket.id} (User: ${socket.user.name})`);
 
-        // Emit current room statuses on connect
+        
         const roomStatuses = {};
         activeRooms.forEach((users, roomId) => {
             roomStatuses[roomId] = { active: users.size > 0, participants: users.size };
         });
         socket.emit('rooms:status', roomStatuses);
 
-        // Join interview room
+        
         socket.on('room:join', async (data) => {
             try {
                 const { interview_id } = data;
@@ -42,7 +42,7 @@ const setupSocket = (io) => {
                     return;
                 }
 
-                // Verify interview exists
+                
                 const interview = await pool.query(
                     'SELECT id, title, status FROM interviews WHERE id = $1',
                     [interview_id]
@@ -55,12 +55,12 @@ const setupSocket = (io) => {
 
                 const roomId = `interview_${interview_id}`;
 
-                // Join the socket room
+                
                 socket.join(roomId);
                 socket.currentRoom = roomId;
                 socket.interviewId = interview_id;
 
-                // Track active users in room
+                
                 if (!activeRooms.has(interview_id)) {
                     activeRooms.set(interview_id, new Set());
                 }
@@ -68,7 +68,7 @@ const setupSocket = (io) => {
 
                 const participantCount = activeRooms.get(interview_id).size;
 
-                // Notify everyone in the room
+                
                 io.to(roomId).emit('room:status', {
                     interview_id,
                     status: 'active',
@@ -78,7 +78,7 @@ const setupSocket = (io) => {
                     timestamp: new Date().toISOString(),
                 });
 
-                // Broadcast updated room status to ALL connected clients
+                
                 io.emit('room:updated', {
                     interview_id,
                     active: true,
@@ -92,13 +92,13 @@ const setupSocket = (io) => {
             }
         });
 
-        // Leave interview room
+        
         socket.on('room:leave', (data) => {
             const { interview_id } = data || {};
             handleLeave(socket, io, interview_id || socket.interviewId);
         });
 
-        // Send message in room (basic chat)
+        
         socket.on('room:message', (data) => {
             const { interview_id, message } = data;
             const roomId = `interview_${interview_id}`;
@@ -110,7 +110,7 @@ const setupSocket = (io) => {
             });
         });
 
-        // Get room status
+        
         socket.on('room:getStatus', (data) => {
             const { interview_id } = data;
             const participants = activeRooms.get(interview_id);
@@ -121,7 +121,7 @@ const setupSocket = (io) => {
             });
         });
 
-        // Handle disconnect
+        
         socket.on('disconnect', () => {
             console.log(`🔌 Socket disconnected: ${socket.id} (User: ${socket.user.name})`);
             if (socket.interviewId) {
@@ -164,7 +164,7 @@ const handleLeave = (socket, io, interview_id) => {
     }
 };
 
-// Get current room statuses (for HTTP endpoint)
+
 const getRoomStatuses = () => {
     const statuses = {};
     activeRooms.forEach((users, roomId) => {

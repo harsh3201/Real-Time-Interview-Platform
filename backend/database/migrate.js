@@ -4,7 +4,7 @@ const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 async function runMigration() {
-    // First connect to postgres DB to create interview_platform DB if needed
+    
     const adminPool = new Pool({
         host: process.env.DB_HOST || 'localhost',
         port: parseInt(process.env.DB_PORT) || 5432,
@@ -15,7 +15,7 @@ async function runMigration() {
     });
 
     try {
-        // Create database if it doesn't exist
+        
         const dbName = process.env.DB_NAME || 'interview_platform';
         const check = await adminPool.query(
             `SELECT 1 FROM pg_database WHERE datname = $1`, [dbName]
@@ -33,7 +33,7 @@ async function runMigration() {
         await adminPool.end();
     }
 
-    // Now connect to the actual DB and run schema
+    
     const pool = new Pool({
         host: process.env.DB_HOST || 'localhost',
         port: parseInt(process.env.DB_PORT) || 5432,

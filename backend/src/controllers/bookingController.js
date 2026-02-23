@@ -1,6 +1,6 @@
 const pool = require('../config/database');
 
-// POST /api/bookings
+
 const createBooking = async (req, res) => {
     try {
         const { interview_id } = req.body;
@@ -10,7 +10,7 @@ const createBooking = async (req, res) => {
             return res.status(400).json({ message: 'interview_id is required.' });
         }
 
-        // Check if interview exists and is not cancelled
+        
         const interview = await pool.query(
             'SELECT id, status, title, scheduled_time FROM interviews WHERE id = $1',
             [interview_id]
@@ -28,7 +28,7 @@ const createBooking = async (req, res) => {
             return res.status(400).json({ message: 'Cannot book a completed interview.' });
         }
 
-        // Check if user already booked this interview
+        
         const existingBooking = await pool.query(
             'SELECT id FROM bookings WHERE user_id = $1 AND interview_id = $2',
             [user_id, interview_id]
@@ -38,7 +38,7 @@ const createBooking = async (req, res) => {
             return res.status(409).json({ message: 'You have already booked this interview.' });
         }
 
-        // Create booking
+        
         const result = await pool.query(
             'INSERT INTO bookings (user_id, interview_id) VALUES ($1, $2) RETURNING *',
             [user_id, interview_id]
@@ -55,7 +55,7 @@ const createBooking = async (req, res) => {
     }
 };
 
-// GET /api/bookings/me - Get current user's bookings
+
 const getMyBookings = async (req, res) => {
     try {
         const user_id = req.user.id;
@@ -81,7 +81,7 @@ const getMyBookings = async (req, res) => {
     }
 };
 
-// DELETE /api/bookings/:id - Cancel a booking
+
 const cancelBooking = async (req, res) => {
     try {
         const { id } = req.params;
@@ -105,7 +105,7 @@ const cancelBooking = async (req, res) => {
     }
 };
 
-// GET /api/bookings/all (admin only)
+
 const getAllBookings = async (req, res) => {
     try {
         const result = await pool.query(`

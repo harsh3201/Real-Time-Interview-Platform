@@ -9,11 +9,11 @@ try {
     });
     console.log(result);
 } catch (e) {
-    // Jest outputs to stderr when there are failures
+    
     const output = e.stdout + '\n' + e.stderr;
     const lines = output.split('\n');
 
-    // Find result summary lines
+    
     const summaryLines = lines.filter(l =>
         l.includes('PASS') || l.includes('FAIL') ||
         l.includes('Tests:') || l.includes('Test Suites:') ||

@@ -11,7 +11,7 @@ require('dotenv').config();
 const app = express();
 const server = http.createServer(app);
 
-// Socket.io setup
+
 const io = new Server(server, {
     cors: {
         origin: process.env.CLIENT_URL || 'http://localhost:3000',
@@ -20,7 +20,7 @@ const io = new Server(server, {
     },
 });
 
-// Middleware
+
 app.use(cors({
     origin: process.env.CLIENT_URL || 'http://localhost:3000',
     credentials: true,
@@ -28,29 +28,29 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Request logger
+
 app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} ${req.method} ${req.path}`);
     next();
 });
 
-// Swagger docs
+
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
     customCss: '.swagger-ui .topbar { display: none }',
     customSiteTitle: 'Interview Platform API Docs',
 }));
 
-// Routes
+
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/interviews', require('./routes/interviewRoutes'));
 app.use('/api/bookings', require('./routes/bookingRoutes'));
 
-// Room status endpoint
+
 app.get('/api/rooms/status', (req, res) => {
     res.json({ rooms: getRoomStatuses() });
 });
 
-// Health check
+
 app.get('/api/health', (req, res) => {
     res.json({
         status: 'ok',
@@ -60,7 +60,7 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// API info
+
 app.get('/', (req, res) => {
     res.json({
         name: 'Real-Time Interview Platform API',
@@ -76,18 +76,18 @@ app.get('/', (req, res) => {
     });
 });
 
-// 404 handler
+
 app.use((req, res) => {
     res.status(404).json({ message: `Route ${req.path} not found` });
 });
 
-// Global error handler
+
 app.use((err, req, res, next) => {
     console.error('Global error:', err);
     res.status(500).json({ message: 'Internal server error', error: err.message });
 });
 
-// Setup Socket.io
+
 setupSocket(io);
 
 const PORT = process.env.PORT || 5000;
