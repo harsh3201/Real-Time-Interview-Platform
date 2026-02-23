@@ -5,6 +5,8 @@ const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swagger');
 const { setupSocket, getRoomStatuses } = require('./socket/socketHandler');
+const passport = require('./config/passport');
+const session = require('express-session');
 
 require('dotenv').config();
 
@@ -27,6 +29,13 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'interview_secret',
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 app.use((req, res, next) => {
