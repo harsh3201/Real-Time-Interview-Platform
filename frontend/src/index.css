@@ -720,6 +720,32 @@ h3,
   margin-top: 8px;
 }
 
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  z-index: 5;
+}
+
+.password-toggle:hover {
+  color: var(--accent-blue);
+  transform: scale(1.1);
+}
+
 .auth-divider {
   display: flex;
   align-items: center;

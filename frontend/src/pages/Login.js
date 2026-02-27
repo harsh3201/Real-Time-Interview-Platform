@@ -11,6 +11,7 @@ const Login = () => {
     const [otp, setOtp] = useState('');
     const [loading, setLoading] = useState(false);
     const [view, setView] = useState('password');
+    const [showPassword, setShowPassword] = useState(false);
 
     const { login, requestOTP, verifyOTP, handleOAuthToken } = useAuth();
     const { showToast } = useToast();
@@ -53,6 +54,14 @@ const Login = () => {
 
     const handlePasswordLogin = async (e) => {
         e.preventDefault();
+
+        // Password Validation: min 8, 1 special char, 1 number
+        const passRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
+        if (!passRegex.test(password)) {
+            showToast('Password must be at least 8 characters and contain 1 special character and 1 number.', 'error');
+            return;
+        }
+
         setLoading(true);
         try {
             const user = await login(email, password);
@@ -136,14 +145,23 @@ const Login = () => {
                                         <label className="form-label" style={{ marginBottom: 0 }}>Password</label>
                                         <Link to="/forgot-password" onMouseEnter={() => handleHover(true)} onMouseLeave={() => handleHover(false)} style={{ fontSize: '0.75rem', color: 'var(--accent-blue)', textDecoration: 'none', fontWeight: 700 }}>Forgot?</Link>
                                     </div>
-                                    <input
-                                        type="password"
-                                        className="form-input"
-                                        placeholder="••••••••"
-                                        value={password}
-                                        onChange={e => setPassword(e.target.value)}
-                                        required
-                                    />
+                                    <div className="password-input-wrapper">
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            className="form-input"
+                                            placeholder="••••••••"
+                                            value={password}
+                                            onChange={e => setPassword(e.target.value)}
+                                            required
+                                        />
+                                        <button
+                                            type="button"
+                                            className="password-toggle"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                        >
+                                            {showPassword ? "👁️" : "👁️‍🗨️"}
+                                        </button>
+                                    </div>
                                 </div>
                                 <button type="submit" className="btn btn-primary btn-full" disabled={loading} onMouseEnter={() => handleHover(true)} onMouseLeave={() => handleHover(false)}>
                                     {loading ? 'Authenticating...' : 'Sign In Now'}

@@ -12,6 +12,7 @@ const ForgotPassword = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const { forgotPassword, resetPassword } = useAuth();
     const { showToast } = useToast();
@@ -50,8 +51,14 @@ const ForgotPassword = () => {
             showToast('Passwords do not match.', 'error');
             return;
         }
-        if (newPassword.length < 6) {
-            showToast('Password must be at least 6 characters.', 'error');
+        if (newPassword.length < 8) {
+            showToast('Password must be at least 8 characters.', 'error');
+            return;
+        }
+
+        const passRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
+        if (!passRegex.test(newPassword)) {
+            showToast('Password must contain at least 1 special character and 1 number.', 'error');
             return;
         }
         setLoading(true);
@@ -117,23 +124,34 @@ const ForgotPassword = () => {
                             </div>
                             <div className="form-group">
                                 <label className="form-label">New Password</label>
-                                <input
-                                    type="password" className="form-input"
-                                    placeholder="At least 6 characters"
-                                    value={newPassword}
-                                    onChange={e => setNewPassword(e.target.value)}
-                                    required
-                                />
+                                <div className="password-input-wrapper">
+                                    <input
+                                        type={showPassword ? "text" : "password"} className="form-input"
+                                        placeholder="Min 8 chars + 1 spec + 1 num"
+                                        value={newPassword}
+                                        onChange={e => setNewPassword(e.target.value)}
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        className="password-toggle"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? "👁️" : "👁️‍🗨️"}
+                                    </button>
+                                </div>
                             </div>
                             <div className="form-group">
                                 <label className="form-label">Confirm New Password</label>
-                                <input
-                                    type="password" className="form-input"
-                                    placeholder="Repeat new password"
-                                    value={confirmPassword}
-                                    onChange={e => setConfirmPassword(e.target.value)}
-                                    required
-                                />
+                                <div className="password-input-wrapper">
+                                    <input
+                                        type={showPassword ? "text" : "password"} className="form-input"
+                                        placeholder="Repeat new password"
+                                        value={confirmPassword}
+                                        onChange={e => setConfirmPassword(e.target.value)}
+                                        required
+                                    />
+                                </div>
                             </div>
                             <button type="submit" className="btn btn-primary btn-full" disabled={loading}>
                                 {loading ? 'Updating...' : 'Update Password'}

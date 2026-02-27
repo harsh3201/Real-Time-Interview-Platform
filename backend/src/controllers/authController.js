@@ -12,8 +12,13 @@ const register = async (req, res) => {
             return res.status(400).json({ message: 'Name, email, and password are required.' });
         }
 
-        if (password.length < 6) {
-            return res.status(400).json({ message: 'Password must be at least 6 characters long.' });
+        if (password.length < 8) {
+            return res.status(400).json({ message: 'Password must be at least 8 characters long.' });
+        }
+
+        const passRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
+        if (!passRegex.test(password)) {
+            return res.status(400).json({ message: 'Password must contain at least 1 special character and 1 number.' });
         }
 
         const validRoles = ['candidate', 'admin'];

@@ -10,6 +10,7 @@ const Register = () => {
     const [loading, setLoading] = useState(false);
     const [otp, setOtp] = useState('');
     const [showOTP, setShowOTP] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const { register, verifyOTP, requestOTP } = useAuth();
     const { showToast } = useToast();
     const navigate = useNavigate();
@@ -39,8 +40,14 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (form.password.length < 6) {
-            showToast('Password must be at least 6 characters.', 'error');
+        if (form.password.length < 8) {
+            showToast('Password must be at least 8 characters.', 'error');
+            return;
+        }
+
+        const passRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
+        if (!passRegex.test(form.password)) {
+            showToast('Password must contain at least 1 special character and 1 number.', 'error');
             return;
         }
 
@@ -128,13 +135,22 @@ const Register = () => {
 
                             <div className="form-group">
                                 <label className="form-label" htmlFor="reg-password">Password</label>
-                                <input
-                                    id="reg-password" type="password" className="form-input"
-                                    placeholder="Minimum 6 characters"
-                                    value={form.password}
-                                    onChange={e => setForm({ ...form, password: e.target.value })}
-                                    required
-                                />
+                                <div className="password-input-wrapper">
+                                    <input
+                                        id="reg-password" type={showPassword ? "text" : "password"} className="form-input"
+                                        placeholder="Min 8 chars + 1 spec + 1 num"
+                                        value={form.password}
+                                        onChange={e => setForm({ ...form, password: e.target.value })}
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        className="password-toggle"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? "👁️" : "👁️‍🗨️"}
+                                    </button>
+                                </div>
                             </div>
 
                             <div className="form-group">
