@@ -1,10 +1,9 @@
 const pool = require('../config/database');
 
-
 const getAllInterviews = async (req, res) => {
     try {
         const result = await pool.query(`
-      SELECT 
+      SELECT
         i.id, i.title, i.scheduled_time, i.status, i.created_by,
         u.name AS creator_name,
         COUNT(b.id) AS booking_count
@@ -22,13 +21,12 @@ const getAllInterviews = async (req, res) => {
     }
 };
 
-
 const getInterviewById = async (req, res) => {
     try {
         const { id } = req.params;
 
         const result = await pool.query(`
-      SELECT 
+      SELECT
         i.id, i.title, i.scheduled_time, i.status, i.created_by,
         u.name AS creator_name
       FROM interviews i
@@ -40,7 +38,6 @@ const getInterviewById = async (req, res) => {
             return res.status(404).json({ message: 'Interview not found.' });
         }
 
-        
         const bookings = await pool.query(`
       SELECT b.id, b.user_id, u.name AS candidate_name, u.email AS candidate_email
       FROM bookings b
@@ -57,7 +54,6 @@ const getInterviewById = async (req, res) => {
         res.status(500).json({ message: 'Internal server error.', error: err.message });
     }
 };
-
 
 const createInterview = async (req, res) => {
     try {
@@ -82,11 +78,10 @@ const createInterview = async (req, res) => {
     }
 };
 
-
 const updateInterview = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, scheduled_time, status } = req.body;
+        const { title, scheduled_time, status, report } = req.body;
 
         const existing = await pool.query('SELECT * FROM interviews WHERE id = $1', [id]);
         if (existing.rows.length === 0) {
@@ -104,8 +99,8 @@ const updateInterview = async (req, res) => {
         }
 
         const result = await pool.query(
-            'UPDATE interviews SET title = $1, scheduled_time = $2, status = $3 WHERE id = $4 RETURNING *',
-            [updatedTitle, updatedTime, updatedStatus, id]
+            'UPDATE interviews SET title = $1, scheduled_time = $2, status = $3, report = $4 WHERE id = $5 RETURNING *',
+            [updatedTitle, updatedTime, updatedStatus, report || interview.report, id]
         );
 
         res.status(200).json({
@@ -118,7 +113,6 @@ const updateInterview = async (req, res) => {
     }
 };
 
-
 const deleteInterview = async (req, res) => {
     try {
         const { id } = req.params;
@@ -128,7 +122,6 @@ const deleteInterview = async (req, res) => {
             return res.status(404).json({ message: 'Interview not found.' });
         }
 
-        
         await pool.query('DELETE FROM bookings WHERE interview_id = $1', [id]);
         await pool.query('DELETE FROM interviews WHERE id = $1', [id]);
 

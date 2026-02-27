@@ -1,6 +1,5 @@
 const pool = require('../config/database');
 
-
 const createBooking = async (req, res) => {
     try {
         const { interview_id } = req.body;
@@ -10,7 +9,6 @@ const createBooking = async (req, res) => {
             return res.status(400).json({ message: 'interview_id is required.' });
         }
 
-        
         const interview = await pool.query(
             'SELECT id, status, title, scheduled_time FROM interviews WHERE id = $1',
             [interview_id]
@@ -28,7 +26,6 @@ const createBooking = async (req, res) => {
             return res.status(400).json({ message: 'Cannot book a completed interview.' });
         }
 
-        
         const existingBooking = await pool.query(
             'SELECT id FROM bookings WHERE user_id = $1 AND interview_id = $2',
             [user_id, interview_id]
@@ -38,7 +35,6 @@ const createBooking = async (req, res) => {
             return res.status(409).json({ message: 'You have already booked this interview.' });
         }
 
-        
         const result = await pool.query(
             'INSERT INTO bookings (user_id, interview_id) VALUES ($1, $2) RETURNING *',
             [user_id, interview_id]
@@ -55,13 +51,12 @@ const createBooking = async (req, res) => {
     }
 };
 
-
 const getMyBookings = async (req, res) => {
     try {
         const user_id = req.user.id;
 
         const result = await pool.query(`
-      SELECT 
+      SELECT
         b.id AS booking_id,
         b.interview_id,
         i.title,
@@ -80,7 +75,6 @@ const getMyBookings = async (req, res) => {
         res.status(500).json({ message: 'Internal server error.', error: err.message });
     }
 };
-
 
 const cancelBooking = async (req, res) => {
     try {
@@ -105,11 +99,10 @@ const cancelBooking = async (req, res) => {
     }
 };
 
-
 const getAllBookings = async (req, res) => {
     try {
         const result = await pool.query(`
-      SELECT 
+      SELECT
         b.id AS booking_id,
         b.user_id,
         u.name AS candidate_name,

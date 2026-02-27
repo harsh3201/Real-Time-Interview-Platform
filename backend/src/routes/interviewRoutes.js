@@ -9,20 +9,13 @@ const {
 } = require('../controllers/interviewController');
 const { authenticate, authorizeAdmin } = require('../middleware/auth');
 
-
-
-
 router.get('/', authenticate, getAllInterviews);
-
 
 router.get('/:id', authenticate, getInterviewById);
 
-
 router.post('/', authenticate, authorizeAdmin, createInterview);
 
-
-router.put('/:id', authenticate, authorizeAdmin, updateInterview);
-
+router.put('/:id', authenticate, updateInterview);
 
 router.delete('/:id', authenticate, authorizeAdmin, deleteInterview);
 

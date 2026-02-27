@@ -2,11 +2,10 @@ const jwt = require('jsonwebtoken');
 const pool = require('../config/database');
 require('dotenv').config();
 
-
 const activeRooms = new Map();
 
 const setupSocket = (io) => {
-    
+
     io.use((socket, next) => {
         const token = socket.handshake.auth.token || socket.handshake.headers.authorization;
         if (!token) {
@@ -25,14 +24,12 @@ const setupSocket = (io) => {
     io.on('connection', (socket) => {
         console.log(`🔌 Socket connected: ${socket.id} (User: ${socket.user.name})`);
 
-        
         const roomStatuses = {};
         activeRooms.forEach((users, roomId) => {
             roomStatuses[roomId] = { active: users.size > 0, participants: users.size };
         });
         socket.emit('rooms:status', roomStatuses);
 
-        
         socket.on('room:join', async (data) => {
             try {
                 const { interview_id } = data;
@@ -42,7 +39,6 @@ const setupSocket = (io) => {
                     return;
                 }
 
-                
                 const interview = await pool.query(
                     'SELECT id, title, status FROM interviews WHERE id = $1',
                     [interview_id]
@@ -55,12 +51,10 @@ const setupSocket = (io) => {
 
                 const roomId = `interview_${interview_id}`;
 
-                
                 socket.join(roomId);
                 socket.currentRoom = roomId;
                 socket.interviewId = interview_id;
 
-                
                 if (!activeRooms.has(interview_id)) {
                     activeRooms.set(interview_id, new Set());
                 }
@@ -68,7 +62,6 @@ const setupSocket = (io) => {
 
                 const participantCount = activeRooms.get(interview_id).size;
 
-                
                 io.to(roomId).emit('room:status', {
                     interview_id,
                     status: 'active',
@@ -78,7 +71,6 @@ const setupSocket = (io) => {
                     timestamp: new Date().toISOString(),
                 });
 
-                
                 io.emit('room:updated', {
                     interview_id,
                     active: true,
@@ -92,13 +84,11 @@ const setupSocket = (io) => {
             }
         });
 
-        
         socket.on('room:leave', (data) => {
             const { interview_id } = data || {};
             handleLeave(socket, io, interview_id || socket.interviewId);
         });
 
-        
         socket.on('room:message', (data) => {
             const { interview_id, message } = data;
             const roomId = `interview_${interview_id}`;
@@ -110,7 +100,24 @@ const setupSocket = (io) => {
             });
         });
 
-        
+        socket.on('room:code_sync', (data) => {
+            const { interview_id, code } = data;
+            const roomId = `interview_${interview_id}`;
+            socket.to(roomId).emit('room:code_update', { code });
+        });
+
+        socket.on('room:exec_sync', (data) => {
+            const { interview_id, output, executing } = data;
+            const roomId = `interview_${interview_id}`;
+            socket.to(roomId).emit('room:exec_update', { output, executing });
+        });
+
+        socket.on('room:transcript_sync', (data) => {
+            const { interview_id, text, user } = data;
+            const roomId = `interview_${interview_id}`;
+            socket.to(roomId).emit('room:transcript_update', { text, user });
+        });
+
         socket.on('room:getStatus', (data) => {
             const { interview_id } = data;
             const participants = activeRooms.get(interview_id);
@@ -121,7 +128,30 @@ const setupSocket = (io) => {
             });
         });
 
-        
+        socket.on('webrtc:ready', (data) => {
+            const { interview_id } = data;
+            const roomId = `interview_${interview_id}`;
+            socket.to(roomId).emit('webrtc:ready', { from: socket.id, user: socket.user });
+        });
+
+        socket.on('webrtc:offer', (data) => {
+            const { interview_id, offer } = data;
+            const roomId = `interview_${interview_id}`;
+            socket.to(roomId).emit('webrtc:offer', { offer, from: socket.id });
+        });
+
+        socket.on('webrtc:answer', (data) => {
+            const { interview_id, answer } = data;
+            const roomId = `interview_${interview_id}`;
+            socket.to(roomId).emit('webrtc:answer', { answer, from: socket.id });
+        });
+
+        socket.on('webrtc:ice-candidate', (data) => {
+            const { interview_id, candidate } = data;
+            const roomId = `interview_${interview_id}`;
+            socket.to(roomId).emit('webrtc:ice-candidate', { candidate, from: socket.id });
+        });
+
         socket.on('disconnect', () => {
             console.log(`🔌 Socket disconnected: ${socket.id} (User: ${socket.user.name})`);
             if (socket.interviewId) {
@@ -130,6 +160,7 @@ const setupSocket = (io) => {
         });
     });
 };
+
 
 const handleLeave = (socket, io, interview_id) => {
     if (!interview_id) return;
@@ -163,7 +194,6 @@ const handleLeave = (socket, io, interview_id) => {
         console.log(`📤 ${socket.user.name} left room ${roomId} (${participantCount} participants remaining)`);
     }
 };
-
 
 const getRoomStatuses = () => {
     const statuses = {};

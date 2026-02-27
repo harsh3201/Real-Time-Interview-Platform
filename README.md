@@ -1,183 +1,192 @@
-# Real-Time Interview Platform 🎯
+# 🎙️ Real-Time Interview Platform (RTIP)
 
-A full-stack interview scheduling platform with real-time room status using Socket.io.
+<div align="center">
 
-[![Node.js](https://img.shields.io/badge/Node.js-20-green)](https://nodejs.org)
-[![React](https://img.shields.io/badge/React-18-blue)](https://reactjs.org)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)](https://postgresql.org)
-[![Socket.io](https://img.shields.io/badge/Socket.io-4-black)](https://socket.io)
+![Project Banner](https://img.shields.io/badge/Full--Stack-Interview--Platform-blue?style=for-the-badge&logo=react)
+![Node.js](https://img.shields.io/badge/Backend-Node.js-green?style=for-the-badge&logo=node.js)
+![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-blue?style=for-the-badge&logo=postgresql)
+![AI Powered](https://img.shields.io/badge/AI-Gemini_Flash-orange?style=for-the-badge&logo=google)
 
-## 🚀 Features
+*Empowering the next generation of hiring with AI and Real-time collaboration.*
 
-| Feature | Description |
-|---------|-------------|
-| ✅ JWT Auth | Register/Login with role-based access (Candidate & Admin) |
-| 📋 Interview CRUD | Admins can create, edit, delete interview slots |
-| 📅 Booking System | Candidates can book available interview slots |
-| 🟢 Real-Time Rooms | Live room status with Socket.io (join/leave/chat) |
-| 📚 Swagger Docs | Full API documentation at `/api/docs` |
-| 🧪 Jest Tests | Auth, Interview, and Booking tests |
+[Explore Docs](http://localhost:5000/api/docs) · [Report Bug](https://github.com/harsh3201/Real-Time-Interview-Platform/issues) · [Request Feature](https://github.com/harsh3201/Real-Time-Interview-Platform/issues)
 
-## 🗂️ Project Structure
+</div>
 
+---
+
+## 📖 Table of Contents
+- [✨ Key Features](#-key-features)
+- [🏗️ System Architecture](#-system-architecture)
+- [🛠️ Tech Stack](#-tech-stack)
+- [🚀 Quick Start](#-quick-start)
+- [📡 API & Socket Events](#-api--socket-events)
+- [🧪 Quality Assurance](#-quality-assurance)
+- [📸 Preview](#-preview)
+- [📄 License](#-license)
+
+---
+
+## ✨ Key Features
+
+<details open>
+<summary><b>🤖 AI-Powered Intelligence</b> (Click to collapse)</summary>
+
+- **Deep Profile Analysis:** Leverages **Gemini 1.5 Flash** to parse skills, projects, and experience.
+- **Readiness Scoring:** Get a 0-100 score on how prepared a candidate is for a role.
+- **Gap Identification:** AI suggests specific areas for improvement and market standing.
+</details>
+
+<details>
+<summary><b>⚡ Real-Time Engine</b></summary>
+
+- **Live Status Tracking:** See who's online and which interview rooms are active instantly.
+- **Bi-directional Chat:** Low-latency communication for interviewers and candidates.
+- **Instant Booking:** Slots update across all clients the moment a booking is made.
+</details>
+
+<details>
+<summary><b>🎨 Visual Excellence</b></summary>
+
+- **GSAP Driven:** Silky smooth animations for transitions and state changes.
+- **Responsive Layout:** Desktop-first logic that gracefully scales to mobile.
+- **Modern UI:** Glassmorphism and vibrant color palettes for a premium feel.
+</details>
+
+---
+
+## 🏗️ System Architecture
+
+```mermaid
+graph TD
+    User((User/Admin)) -->|React + GSAP| Frontend[Frontend Interface]
+    Frontend -->|Socket.io| WS[WebSocket Server]
+    Frontend -->|REST API| Express[Express Backend]
+    Express -->|SQL| DB[(PostgreSQL)]
+    Express -->|API Call| Gemini[Google Gemini AI]
+    WS -->|Real-time Updates| Frontend
 ```
-├── backend/
-│   ├── src/
-│   │   ├── config/        # DB & Swagger config
-│   │   ├── controllers/   # Auth, Interview, Booking
-│   │   ├── middleware/    # JWT auth middleware
-│   │   ├── routes/        # Express routes (with Swagger)
-│   │   ├── socket/        # Socket.io handler
-│   │   └── index.js       # Express server entry
-│   ├── database/
-│   │   ├── schema.sql     # PostgreSQL schema + seed
-│   │   └── migrate.js     # Migration runner
-│   └── tests/             # Jest + Supertest tests
-│
-└── frontend/
-    └── src/
-        ├── context/       # Auth Context
-        ├── components/    # Navbar, ProtectedRoute
-        ├── pages/         # Login, Register, Dashboard, Interviews, Room, Admin
-        └── services/      # Axios API client, Socket.io client
+
+### 🔄 Interview Flow
+```mermaid
+sequenceDiagram
+    participant A as Admin
+    participant C as Candidate
+    participant S as Server
+    A->>S: Create Interview Slot
+    S->>C: Push Notification (New Slot)
+    C->>S: Book Slot
+    S->>A: Update Dashboard
+    A->>S: Join Room
+    C->>S: Join Room
+    S->>A: Real-time Status (C Joined)
+    Note over A,C: Live Interview & Chat
 ```
+
+---
 
 ## 🛠️ Tech Stack
 
-**Backend:** Node.js, Express, PostgreSQL, JWT, Socket.io, Swagger  
-**Frontend:** React 18, React Router v6, Axios, Socket.io-client  
-**Testing:** Jest, Supertest  
+| Layer | Primary Tech | Details |
+| :--- | :--- | :--- |
+| **Frontend** | React 19 | Hooks, Context API, GSAP Animations |
+| **Backend** | Node.js | Express, Socket.io, Passport JWT |
+| **Database** | PostgreSQL | Relational schema with PG-Pool |
+| **Artificial Intelligence** | Gemini Flash | Generative AI for candidate parsing |
 
-## 📦 Setup
+---
 
-### Prerequisites
-- Node.js 18+
-- PostgreSQL 14+
+## 🚀 Quick Start
 
-### 1. Clone & Install
-
+### ⚡ The "One-Click" Method (Windows)
+If you are on Windows, simply double-click the master script:
 ```bash
-git clone https://github.com/harsh3201/Real-Time-Interview-Platform.git
-cd Real-Time-Interview-Platform
+START_SYSTEM.bat
 ```
+*This handles port cleanup, moves into directories, and boots both servers simultaneously.*
 
-### 2. Backend Setup
+### 🛠️ Manual Configuration
+
+<details>
+<summary><b>Step 1: Backend Environment Setup</b></summary>
+
+- `cd backend`
+- `npm install`
+- Create `.env` with:
+  ```ini
+  PORT=5000
+  DATABASE_URL=postgresql://user:password@localhost:5432/db
+  GEMINI_API_KEY=your_key
+  JWT_SECRET=your_secret
+  ```
+</details>
+
+<details>
+<summary><b>Step 2: Database Initialization</b></summary>
 
 ```bash
-cd backend
+node backend/database/migrate.js
+```
+</details>
+
+<details>
+<summary><b>Step 3: Frontend Launch</b></summary>
+
+```bash
+cd frontend
 npm install
+npm start
 ```
+</details>
 
-Create `.env`:
-```ini
-PORT=5000
-DATABASE_URL=postgresql://postgres:password@localhost:5432/interview_platform
-JWT_SECRET=your_super_secret_jwt_key
-JWT_EXPIRES_IN=24h
-NODE_ENV=development
-CLIENT_URL=http://localhost:3000
-```
+---
 
-### 3. Database Setup
+## 📡 API & Socket Events
 
+<details>
+<summary><b>🔐 Authentication Endpoints</b></summary>
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/auth/register` | Create new account |
+| `POST` | `/api/auth/login` | Receive JWT Token |
+| `GET` | `/api/auth/profile` | Fetch authenticated user data |
+| `GET` | `/api/ai/analyze` | AI Profile Evaluation |
+</details>
+
+<details>
+<summary><b>💬 WebSocket Events (Socket.io)</b></summary>
+
+| Event | Origin | Effect |
+| :--- | :--- | :--- |
+| `room:join` | Client | Subscribes to room updates |
+| `room:status` | Server | Broadcasts participant changes |
+| `room:message` | Both | Sends/Receives live chat |
+</details>
+
+---
+
+## 🧪 Quality Assurance
+
+We maintain code quality through exhaustive integration testing:
 ```bash
-# Create the database
-psql -U postgres -c "CREATE DATABASE interview_platform;"
-
-# Run migrations (creates tables + seed data)
-node database/migrate.js
+cd backend && npm test
 ```
 
-### 4. Frontend Setup
+---
 
-```bash
-cd ../frontend
-npm install
-# .env is already set to http://localhost:5000
-```
+## 📸 Preview
 
-### 5. Run
+| Feature | Visual |
+| :--- | :--- |
+| **Admin Panel** | ![Dashboard](https://via.placeholder.com/400x200?text=Interactive+Admin+Panel) |
+| **AI Analysis** | ![AI](https://via.placeholder.com/400x200?text=Gemini+Insights+UI) |
+| **Live Room** | ![Room](https://via.placeholder.com/400x200?text=Real-time+Chat+%26+Status) |
 
-```bash
-# Terminal 1 - Backend
-cd backend && npm run dev
+---
 
-# Terminal 2 - Frontend  
-cd frontend && npm start
-```
+## 📄 License
+Distributed under the **MIT License**. See `LICENSE` for more information.
 
-App runs at: http://localhost:3000  
-API at: http://localhost:5000  
-Swagger: http://localhost:5000/api/docs
-
-## 🔐 Test Credentials (after migration)
-
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@interview.com | admin123 |
-| Candidate | alice@example.com | admin123 |
-| Candidate | bob@example.com | admin123 |
-
-## 📡 API Endpoints
-
-### Auth
-| Method | Endpoint | Auth |
-|--------|----------|------|
-| POST | `/api/auth/register` | ❌ |
-| POST | `/api/auth/login` | ❌ |
-| GET | `/api/auth/profile` | ✅ |
-
-### Interviews
-| Method | Endpoint | Auth | Role |
-|--------|----------|------|------|
-| GET | `/api/interviews` | ✅ | Any |
-| GET | `/api/interviews/:id` | ✅ | Any |
-| POST | `/api/interviews` | ✅ | Admin |
-| PUT | `/api/interviews/:id` | ✅ | Admin |
-| DELETE | `/api/interviews/:id` | ✅ | Admin |
-
-### Bookings
-| Method | Endpoint | Auth | Role |
-|--------|----------|------|------|
-| POST | `/api/bookings` | ✅ | Any |
-| GET | `/api/bookings/me` | ✅ | Any |
-| GET | `/api/bookings/all` | ✅ | Admin |
-| DELETE | `/api/bookings/:id` | ✅ | Owner |
-
-### Socket Events
-| Event | Direction | Description |
-|-------|-----------|-------------|
-| `room:join` | Client → Server | Join interview room |
-| `room:leave` | Client → Server | Leave interview room |
-| `room:status` | Server → Client | Room status update |
-| `room:message` | Bi-directional | Chat message |
-| `rooms:status` | Server → Client | All rooms status on connect |
-
-## 🧪 Running Tests
-
-```bash
-cd backend
-npm test
-```
-
-Tests cover:
-- Login returns JWT token
-- Register creates user
-- Admin can create interview
-- Candidate cannot create interview (403)
-- Booking requires auth (401)
-- Duplicate booking returns 409
-
-## 🐳 Docker (Optional)
-
-```bash
-docker-compose up -d
-```
-
-## 📸 Screenshots
-
-Login → Dashboard → Interviews → Room
-
-## 📝 License
-
-MIT
+---
+**Developed with ❤️ by [Harsh](https://github.com/harsh3201)**
