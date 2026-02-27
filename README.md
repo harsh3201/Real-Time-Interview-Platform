@@ -175,13 +175,30 @@ cd backend && npm test
 
 ---
 
-## 📸 Preview
+## 📸 Product Gallery
 
-| Feature | Visual |
-| :--- | :--- |
-| **Admin Panel** | ![Dashboard](docs/images/admin_dashboard.png) |
-| **AI Analysis** | ![AI](docs/images/ai_analysis.png) |
-| **Live Room** | ![Room](docs/images/live_room.png) |
+<div align="center">
+
+### 🖥️ Interactive Admin Command Center
+*Manage candidates, slots, and system status through a sleek, glassmorphic interface.*
+
+![Admin Dashboard](docs/images/admin_dashboard.png)
+
+<br/>
+
+### 🤖 AI Strategic Insights
+*Powered by Gemini 1.5 Flash - Real-time analysis of candidate profiles, skills, and readiness.*
+
+![AI Analysis](docs/images/ai_analysis.png)
+
+<br/>
+
+### 🎙️ Immersive Live Interview Room
+*Real-time code synchronization, low-latency video, and integrated chat telemetry.*
+
+![Live Room](docs/images/live_room.png)
+
+</div>
 
 ---
 
