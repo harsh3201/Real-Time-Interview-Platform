@@ -179,9 +179,9 @@ cd backend && npm test
 
 | Feature | Visual |
 | :--- | :--- |
-| **Admin Panel** | ![Dashboard](https://via.placeholder.com/400x200?text=Interactive+Admin+Panel) |
-| **AI Analysis** | ![AI](https://via.placeholder.com/400x200?text=Gemini+Insights+UI) |
-| **Live Room** | ![Room](https://via.placeholder.com/400x200?text=Real-time+Chat+%26+Status) |
+| **Admin Panel** | ![Dashboard](docs/images/admin_dashboard.png) |
+| **AI Analysis** | ![AI](docs/images/ai_analysis.png) |
+| **Live Room** | ![Room](docs/images/live_room.png) |
 
 ---
 
